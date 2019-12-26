@@ -17,9 +17,21 @@ Namespace Controllers
         Private db As New BusinessCardDBEntities
 
         ' GET: BusinessContactLists
-        Function Index() As ActionResult
-
-            Return View(db.BusinessContactLists.ToList())
+        Function Index(ByVal sortOrder As String, searchString As String) As ActionResult
+            ViewBag.NameSortParm = If(String.IsNullOrEmpty(sortOrder), "name_desc", String.Empty)
+            Dim Contacts = From Contact In db.BusinessContactLists Select Contact
+            If Not String.IsNullOrEmpty(searchString) Then
+                Contacts = Contacts.Where(Function(con) con.Name.ToUpper().Contains(searchString.ToUpper()) Or
+                                              con.FamilyName.ToUpper().Contains(searchString.ToUpper()))
+            End If
+            Select Case sortOrder
+                Case "name_desc"
+                    Contacts = Contacts.OrderByDescending(Function(con) con.Name)
+                Case Else
+                    Contacts = Contacts.OrderBy(Function(con) con.Name)
+            End Select
+            Return View(Contacts.ToList())
+            'Return View(db.BusinessContactLists.ToList())
         End Function
 
 

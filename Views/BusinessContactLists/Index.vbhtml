@@ -2,15 +2,20 @@
 @Code
     ViewData("Title") = "Index"
 End Code
-    <div>
-        <h2>Index of all Contacts</h2>
-    </div>
-
+<div>
+    <h2>Index of all Contacts</h2>
+</div>
+@Using Html.BeginForm()
+    @<p>
+        Find by name: @Html.TextBox("SearchString")
+        <input type="submit" value="Search" />
+    </p>
+End Using
 
 <table class="table" style="border:double">
     <tr>
         <th>
-            @Html.DisplayNameFor(Function(model) model.Name)
+            @Html.ActionLink("Name", "Index", New With {.sortOrder = ViewBag.NameSortParm})
         </th>
         <th>
             @Html.DisplayNameFor(Function(model) model.FamilyName)
